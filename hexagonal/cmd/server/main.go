@@ -1,9 +1,9 @@
 package main
 
 import (
-	"hexagonal/internal/adapters"
+	httpAdapter "hexagonal/internal/adapters/http"
+	"hexagonal/internal/adapters/repository"
 	"hexagonal/internal/application"
-	"hexagonal/internal/ports"
 	"log"
 	"net/http"
 
@@ -12,16 +12,16 @@ import (
 
 func main() {
 	// Repositories (Adapters)
-	personRepo := adapters.NewInMemoryPersonRepository()
-	addressRepo := adapters.NewInMemoryAddressRepository()
+	personRepo := repository.NewInMemoryPersonRepository()
+	addressRepo := repository.NewInMemoryAddressRepository()
 
 	// Services (Application Logic)
 	personService := application.NewPersonService(personRepo)
 	addressService := application.NewAddressService(addressRepo)
 
 	// HTTP Handlers (Ports)
-	personHandler := ports.NewPersonHandler(personService)
-	addressHandler := ports.NewAddressHandler(addressService)
+	personHandler := httpAdapter.NewPersonHandler(personService)
+	addressHandler := httpAdapter.NewAddressHandler(addressService)
 
 	// Set up router
 	r := mux.NewRouter()
